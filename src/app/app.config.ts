@@ -1,9 +1,18 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { HttpBackend, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { MockHttpBackend } from '../services/mock-server';
+import { provideHttpClient } from '@angular/common/http';
+import { authInterceptor } from '../services/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay())]
+  //every HttpClient call in your app now flows through your interceptor first, 
+  // then hits your mock backend instead of a real network call.
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    { provide: HttpBackend, useClass: MockHttpBackend },
+  ],
 };

@@ -1,59 +1,64 @@
-# AngularProject
+# FinDash — Angular Fintech Mini Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+A small fintech-style dashboard built with Angular to practice patterns that
+come up often in real interview take-homes: dynamic reactive forms, race
+condition handling with RxJS, and coordinated token refresh in an HTTP
+interceptor.
 
-## Development server
+Built with **Angular 19** (standalone components, signals, typed reactive
+forms) and a mocked backend (`HttpBackend` override) so the whole app runs
+without a real API.
 
-To start a local development server, run:
+## Features
+
+- **Beneficiary search** — a debounced, cancel-safe search box
+  (`debounceTime` + `distinctUntilChanged` + `switchMap`) that avoids
+  race conditions between rapidly-typed queries.
+- **Account detail** — reactively re-fetches account data as the route
+  parameter changes, backed by an aggregate service with an in-memory cache.
+- **Onboarding form** — a 15+ field dynamic reactive form: an optional,
+  dynamically added/removed `companyDetails` group, and a `FormArray` of
+  signatories that can be added and removed at runtime. Uses `OnPush` change
+  detection and `updateOn: 'blur'` for performance.
+- **Auth & token refresh** — a functional HTTP interceptor coordinates
+  concurrent requests during a token refresh so only a single refresh call
+  is in flight at a time, with typed state handling for success/failure.
+- **Mocked API layer** — an `HttpBackend` override simulates network
+  latency and both success/error responses, so the app is fully runnable
+  and testable without a backend.
+
+## Tech stack
+
+- Angular 19 (standalone components, signals, `@angular/forms`, `@angular/router`)
+- RxJS 7
+- SCSS for styling, with a small shared design system in `src/styles.scss`
+
+## Getting started
 
 ```bash
+npm install
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Then open `http://localhost:4200/`.
 
-## Code scaffolding
+## Project structure
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+src/
+├── accounts/        # accounts list, account detail, aggregate service
+├── app/              # root shell, routes, app config
+├── onboarding/        # dynamic onboarding form
+├── search/            # beneficiary search
+├── services/           # auth, interceptor, token refresh coordinator, mock API, interfaces
+├── transactions/         # transactions page (placeholder)
+├── playground/            # scratch page (placeholder)
+├── navshell.component.*    # top navigation
+└── styles.scss              # shared design tokens & utility classes
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Roadmap
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [ ] Virtual-scrolled list for large record sets (`@angular/cdk`)
+- [ ] Global error handling + safe statement rendering (`DomSanitizer`)
+- [ ] Build out the accounts list and transactions views
