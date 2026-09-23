@@ -1,0 +1,20 @@
+<section class="page">
+    <header class="page-header">
+        <h1>Accounts</h1>
+        <p class="page-subtitle">{{ accounts.length }} accounts loaded — scroll to browse.</p>
+    </header>
+
+    <div class="accounts-list" [style.--row-height.px]="rowHeight">
+        <cdk-virtual-scroll-viewport [itemSize]="rowHeight" class="accounts-viewport">
+            <a
+                class="account-row"
+                *cdkVirtualFor="let account of accounts; trackBy: trackByAccount"
+                [routerLink]="['/accounts', account.id]"
+            >
+                <span class="account-row__nickname">{{ account.nickname }}</span>
+                <span class="account-row__id">{{ account.id }}</span>
+                <span class="account-row__balance">{{ account.balanceCents }} {{ account.currency }}</span>
+            </a>
+        </cdk-virtual-scroll-viewport>
+    </div>
+</section>

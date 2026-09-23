@@ -11,26 +11,8 @@ import { IAccount, IBeneficiary } from './interfaces';
 
 @Injectable()
 export class MockHttpBackend implements HttpBackend {
-  private ACCOUNTS: IAccount[] = [
-    {
-      id: '123',
-      nickname: 'Account 1',
-      balanceCents: 23,
-      currency: 'USD',
-    },
-    {
-      id: '456',
-      nickname: 'Account 2',
-      balanceCents: 45,
-      currency: 'USD',
-    },
-    {
-      id: '789',
-      nickname: 'Account 3',
-      balanceCents: 67,
-      currency: 'USD',
-    }
-  ];
+  private ACCOUNTS: IAccount[] = Array.from({ length: 100000 }, (_, i) => ({ id: `account-${i + 1}`, nickname: `Account ${i + 1}`, balanceCents: (i + 1) * 1000, currency: 'USD' }));
+  
   handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
     return new Observable((observer) => {
       const timer = setTimeout(() => {
